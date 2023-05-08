@@ -1,23 +1,14 @@
 const express = require('express');
-
-// const {
-//   getProducts,
-//   getProduct,
-//   createProduct,
-//   updateProduct,
-//   deleteProduct,
-// } = require("../controllers/product.controller");
+const verifyToken = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.get('/profile', () => console.log('hey'));
+router.get('/profile', [verifyToken], (req, res) => {
+  res.status(200).send('Auth Content.');
+});
 
-// router.get("/products/:id", getProduct);
-
-// router.post("/products", createProduct);
-
-// router.patch("/products/:id", updateProduct);
-
-// router.delete("/products/:id", deleteProduct);
+router.get('/hey', (req, res) => {
+  res.status(200).send('All Content.');
+});
 
 module.exports = router;
