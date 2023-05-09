@@ -1,6 +1,33 @@
+const { getFriendsIds, getRequestsIds } = require('../helpers/getFriendsIds');
 const db = require('../models');
 const User = db.user;
 const Friend = db.friend;
+
+exports.getFriends = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const friendsIds = await getFriendsIds(userId);
+    const friends = await User.find({ _id: { $in: friendsIds } }).select(
+      'firstName lastName profilePicture',
+    );
+    res.status(200).json(friends);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+exports.getRequests = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const requestsIds = await getRequestsIds(userId);
+    const requests = await User.find({ _id: { $in: requestsIds } }).select(
+      'firstName lastName profilePicture',
+    );
+    res.status(200).json(requests);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
 
 exports.addFriend = async (req, res) => {
   try {

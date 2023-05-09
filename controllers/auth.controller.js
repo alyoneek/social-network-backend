@@ -9,7 +9,7 @@ const getValidationErrors = require('../helpers/getValidationErrors');
 
 exports.signUp = async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, studyAt, city } = req.body;
 
     const existingUser = await User.findOne({
       email,
@@ -24,6 +24,9 @@ exports.signUp = async (req, res) => {
       password: password ? bcrypt.hashSync(password, 8) : null,
       firstName,
       lastName,
+      profilePicture: null,
+      studyAt: studyAt ? studyAt : null,
+      city: city ? city : null,
     });
 
     await newUser.save();

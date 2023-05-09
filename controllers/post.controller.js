@@ -1,3 +1,4 @@
+const getFriendsIds = require('../helpers/getFriendsIds');
 const db = require('../models');
 const User = db.user;
 const Post = db.post;
@@ -5,7 +6,13 @@ const Post = db.post;
 exports.createPost = async (req, res) => {
   try {
     const userId = req.userId;
-    const newPost = new Post({ ...req.body, author: userId });
+    const { description, image } = req.body;
+
+    const newPost = new Post({
+      description: description ? description : null,
+      image: image ? image : null,
+      author: userId,
+    });
     await newPost.save();
     await User.findByIdAndUpdate(userId, { $push: { posts: newPost._id } });
     res.status(200).json(newPost);
@@ -35,18 +42,7 @@ exports.getNewslinePosts = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const user = await User.findById(userId).populate({
-      path: 'friends',
-      select: 'requester recipient',
-      match: { status: 'added' },
-    });
-
-    const friendsIds = user.friends.map((friendship) => {
-      return friendship.requester.toString() !== userId
-        ? friendship.requester
-        : friendship.recipient;
-    });
-
+    const friendsIds = getFriendsIds(userId);
     const newslineIds = friendsIds.concat(userId);
 
     const friendsPosts = await Post.find({ author: { $in: newslineIds } })

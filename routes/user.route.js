@@ -1,14 +1,9 @@
 const express = require('express');
 const verifyToken = require('../middlewares/auth');
+const UserController = require('../controllers/user.controller');
 
 const router = express.Router();
 
-router.get('/profile', [verifyToken], (req, res) => {
-  res.status(200).send('Auth Content.');
-});
-
-router.get('/hey', (req, res) => {
-  res.status(200).send('All Content.');
-});
+router.get('/me', [verifyToken], UserController.getMyProfile);
 
 module.exports = router;
