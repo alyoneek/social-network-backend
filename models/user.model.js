@@ -26,6 +26,7 @@ const UserSchema = mongoose.Schema(
       min: 1,
     },
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Friends' }],
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Posts' }],
   },
   { timestamps: true },
 );
