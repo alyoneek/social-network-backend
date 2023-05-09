@@ -27,7 +27,7 @@ exports.signUp = async (req, res) => {
     });
 
     await newUser.save();
-    res.status(200).json();
+    res.status(204).json();
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).send(getValidationErrors(error));
@@ -52,7 +52,7 @@ exports.signIn = async (req, res) => {
       return res.status(401).json({ message: 'Authentication failed. Invalid password' });
     }
 
-    const token = jwt.sign({ id: existingUser.id }, config.secret, {
+    const token = jwt.sign({ id: existingUser._id }, config.secret, {
       expiresIn: config.expiresIn,
     });
 
@@ -60,6 +60,6 @@ exports.signIn = async (req, res) => {
       token,
     });
   } catch (error) {
-    res.status(500).send({ message: error });
+    res.status(500).send({ message: error.message });
   }
 };
